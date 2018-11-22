@@ -3,57 +3,54 @@
 #include <arduino.h>
 
 
-class PR_RelayClass {
+class PR_Relay {
         public:
-			PR_RelayClass(const uint8_t pin, const bool onValue );
-            void	begin();
+			PR_Relay( const uint8_t pin, const bool onValue );
+			~PR_Relay();
 			
 			void	on();
 			void	off();
+			void	toggle();
 			void	set(const bool state);
 			
 			void	loop();
 						
         protected:
 			uint8_t	_pin;
-			bool	_onValue;
-			bool	_state;
-			
+			bool	_offValue;
+			bool	_state;	
 };
 
-PR_RelayClass::PR_RelayClass(const uint8_t pin, const bool onValue ) 
-	:
-		_pin(pin),
-		_onValue(onValue),
-		_state(false)
-	{
-	begin();
-}
-
-void	PR_RelayClass::begin() {
-	
+PR_Relay::PR_Relay(const uint8_t pin, const bool onValue ) : 	_pin(pin),
+																_offValue(!onValue),
+																_state(false)
+{
 	pinMode(_pin, OUTPUT);
-	digitalWrite(_pin, !_onValue);
+	set(false);
 }
 
-void	PR_RelayClass::set(const bool state) {
+PR_Relay::~PR_Relay() {
 	
-	if ( state ) on(); else off(); 
+	pinMode(_pin, INPUT);
+
 }
 
-void	PR_RelayClass::on() {
-	
-	digitalWrite(_pin, _onValue);
-	_state = true;
+void	PR_Relay::on() 		{ set(true);	}
+void	PR_Relay::off()  	{ set(false);	}
+
+void	PR_Relay::toggle() {
+	_state = !_state;
+	set(_state);
 }
 
-void	PR_RelayClass::off() {
-	
-	digitalWrite(_pin, !_onValue);
-	_state = false;
+void	PR_Relay::set(const bool value) {
+	_state = value;
+	digitalWrite(_pin, _offValue ^ _state);
 }
 
-void	PR_RelayClass::loop() {
+bool	PR_Relay::getVal() 		{ return _state;  }
+
+void	PR_Relay::loop() {
 
 	set(_state);	//reduce risk of wrong pin state if changed somewhere
 }	
