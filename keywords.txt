@@ -16,7 +16,8 @@ PR_Relay	KEYWORD1
 on		KEYWORD2
 off		KEYWORD2
 toggle	KEYWORD2
-set		KEYWORD2	
+set		KEYWORD2
+getVal	KEYWORD2
 loop	KEYWORD2	
 
 

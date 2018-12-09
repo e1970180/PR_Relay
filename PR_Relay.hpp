@@ -12,6 +12,7 @@ class PR_Relay {
 			void	off();
 			void	toggle();
 			void	set(const bool state);
+			bool	getVal();	
 			
 			void	loop();
 						
@@ -19,6 +20,8 @@ class PR_Relay {
 			uint8_t	_pin;
 			bool	_offValue;
 			bool	_state;	
+			
+			inline void	_set();
 };
 
 PR_Relay::PR_Relay(const uint8_t pin, const bool onValue ) : 	_pin(pin),
@@ -40,17 +43,22 @@ void	PR_Relay::off()  	{ set(false);	}
 
 void	PR_Relay::toggle() {
 	_state = !_state;
-	set(_state);
+	_set();
 }
 
 void	PR_Relay::set(const bool value) {
 	_state = value;
+	_set();
+}
+
+inline void	PR_Relay::_set() {
 	digitalWrite(_pin, _offValue ^ _state);
 }
+
 
 bool	PR_Relay::getVal() 		{ return _state;  }
 
 void	PR_Relay::loop() {
 
-	set(_state);	//reduce risk of wrong pin state if changed somewhere
+	_set();	//reduce risk of wrong pin state if changed somewhere
 }	
